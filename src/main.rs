@@ -1,3 +1,4 @@
-fn main() {
-    println!("Hello, world!");
+use anyhow::Result;
+fn main() -> Result<()> {
+    Ok(())
 }

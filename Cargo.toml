@@ -8,3 +8,4 @@ authors = ["Noah <upupqi.cs@gmail.com>"]
 
 [dependencies]
 anyhow = "^1.0"
+rand = "^0.8.5"

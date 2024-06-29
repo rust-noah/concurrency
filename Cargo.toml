@@ -8,4 +8,5 @@ authors = ["Noah <upupqi.cs@gmail.com>"]
 
 [dependencies]
 anyhow = "^1.0"
+oneshot = "0.1.8"
 rand = "^0.8.5"

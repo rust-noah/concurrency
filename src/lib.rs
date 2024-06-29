@@ -1,3 +1,5 @@
 mod matrix;
+mod vector;
 
-pub use matrix::{multiply, Matrix};
+pub use matrix::*;
+pub use vector::*;

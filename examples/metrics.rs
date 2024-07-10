@@ -1,4 +1,7 @@
-use std::{thread, time::Duration};
+use std::{
+    thread,
+    time::{Duration, Instant},
+};
 
 use anyhow::Result;
 use concurrency::Metrics;
@@ -8,6 +11,7 @@ const N: usize = 2;
 const M: usize = 4;
 fn main() -> Result<()> {
     let metrics = Metrics::new();
+    let start_time = Instant::now();
 
     // region:    --- 单线程可用 code
 
@@ -35,27 +39,38 @@ fn main() -> Result<()> {
         request_worker(metrics.clone())?;
     }
 
-    loop {
+    while start_time.elapsed() < Duration::from_secs(10) {
         thread::sleep(Duration::from_secs(2));
-        println!("{:?}", metrics.snapshot());
+        println!("{:?}", metrics.snapshot()?);
     }
+
+    Ok(())
 }
 
 fn task_worker(idx: usize, metrics: Metrics) -> Result<()> {
-    thread::spawn(move || loop{
-        let mut rng = rand::thread_rng();
-        thread::sleep(Duration::from_millis(rng.gen_range(100..5000)));
-        metrics.inc(format!("call.thread.worker.{}", idx)).unwrap();
+    thread::spawn(move || {
+        loop {
+            let mut rng = rand::thread_rng();
+            thread::sleep(Duration::from_millis(rng.gen_range(100..5000)));
+            // metrics.inc(format!("call.thread.worker.{}", idx)).unwrap();
+            metrics.inc(format!("call.thread.worker.{}", idx))?;
+        }
+        #[allow(unreachable_code)]
+        Ok::<_, anyhow::Error>(())
     });
     Ok(())
 }
 
 fn request_worker(metrics: Metrics) -> Result<()> {
-    thread::spawn(move || loop {
-        let mut rng = rand::thread_rng();
-        thread::sleep(Duration::from_millis(rng.gen_range(50..800)));
-        let page = rng.gen_range(1..=256);
-        metrics.inc(format!("req.page.{}", page)).unwrap();
+    thread::spawn(move || {
+        loop {
+            let mut rng = rand::thread_rng();
+            thread::sleep(Duration::from_millis(rng.gen_range(50..800)));
+            let page = rng.gen_range(1..=256);
+            metrics.inc(format!("req.page.{}", page))?;
+        }
+        #[allow(unreachable_code)]
+        Ok::<_, anyhow::Error>(())
     });
     Ok(())
 }

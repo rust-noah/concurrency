@@ -8,5 +8,6 @@ authors = ["Noah <upupqi.cs@gmail.com>"]
 
 [dependencies]
 anyhow = "^1.0"
+dashmap = "6.0.1"
 oneshot = "0.1.8"
 rand = "^0.8.5"
